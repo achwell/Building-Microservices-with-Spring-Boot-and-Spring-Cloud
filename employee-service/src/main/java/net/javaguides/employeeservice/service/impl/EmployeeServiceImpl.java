@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.javaguides.employeeservice.dto.APIResponseDto;
 import net.javaguides.employeeservice.dto.DepartmentDto;
 import net.javaguides.employeeservice.dto.EmployeeDto;
+import net.javaguides.employeeservice.dto.OrganizationDto;
 import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.mapper.EmployeeMapper;
 import net.javaguides.employeeservice.repository.EmployeeRepository;
@@ -60,7 +61,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 //        DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
 
-        return new APIResponseDto(EmployeeMapper.mapToEmployeeDto(employee), departmentDto);
+        OrganizationDto organizationDto = webClient.get()
+                .uri("http://localhost:8083/api/organizations/" + employee.getOrganizationCode())
+                .retrieve()
+                .bodyToMono(OrganizationDto.class)
+                .block();
+
+        return new APIResponseDto(EmployeeMapper.mapToEmployeeDto(employee), departmentDto, organizationDto);
     }
 
     public APIResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
@@ -73,7 +80,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Employee employee = optionalEmployee.get();
         DepartmentDto departmentDto = new DepartmentDto(1L, "Department name", "Department description", employee.getDepartmentCode());
-        return new APIResponseDto(EmployeeMapper.mapToEmployeeDto(employee), departmentDto);
+
+        OrganizationDto organizationDto = webClient.get()
+                .uri("http://localhost:8083/api/organizations/" + employee.getOrganizationCode())
+                .retrieve()
+                .bodyToMono(OrganizationDto.class)
+                .block();
+        return new APIResponseDto(EmployeeMapper.mapToEmployeeDto(employee), departmentDto, organizationDto);
     }
 
 }
