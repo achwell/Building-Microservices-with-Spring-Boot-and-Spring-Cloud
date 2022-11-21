@@ -10,10 +10,8 @@
     <description>Building Microservices with Spring Boot and Spring Cloud</description>
     <packaging>pom</packaging>
     <modules>
-        <module>springboot-rest-api</module>
-        <module>springboot-restful-webservices</module>
+        <module>service-registry</module>
         <module>department-service</module>
         <module>employee-service</module>
-        <module>service-registry</module>
     </modules>
 </project>
