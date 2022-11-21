@@ -1,5 +1,7 @@
 package net.javaguides.employeeservice.service.impl;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javaguides.employeeservice.dto.APIResponseDto;
@@ -23,9 +25,9 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private RestTemplate restTemplate;
-    // private final WebClient webClient;
-    private final APIClient apiClient;
+    //private RestTemplate restTemplate;
+    private final WebClient webClient;
+    //private final APIClient apiClient;
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
@@ -34,6 +36,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return EmployeeMapper.mapToEmployeeDto(saveDEmployee);
     }
 
+    //@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+    @Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
     @Override
     public APIResponseDto getEmployeeById(Long employeeId) {
         log.info("inside getEmployeeById() method");
@@ -48,14 +52,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 //
 //        DepartmentDto departmentDto = responseEntity.getBody();
 
-//        DepartmentDto departmentDto = webClient.get()
-//                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
-//                .retrieve()
-//                .bodyToMono(DepartmentDto.class)
-//                .block();
+        DepartmentDto departmentDto = webClient.get()
+                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+                .retrieve()
+                .bodyToMono(DepartmentDto.class)
+                .block();
 
-        DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
+//        DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
 
+        return new APIResponseDto(EmployeeMapper.mapToEmployeeDto(employee), departmentDto);
+    }
+
+    public APIResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
+
+        log.info("inside getDefaultDepartment() method");
+
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        if(optionalEmployee.isEmpty()) {
+            throw new RuntimeException("User dues not exist");
+        }
+        Employee employee = optionalEmployee.get();
+        DepartmentDto departmentDto = new DepartmentDto(1L, "Department name", "Department description", employee.getDepartmentCode());
         return new APIResponseDto(EmployeeMapper.mapToEmployeeDto(employee), departmentDto);
     }
 
