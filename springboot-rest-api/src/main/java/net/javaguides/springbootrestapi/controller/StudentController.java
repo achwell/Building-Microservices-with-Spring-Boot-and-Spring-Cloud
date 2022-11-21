@@ -15,12 +15,11 @@ public class StudentController {
     // http://localhost:8080/student
     @GetMapping("student")
     public Student getStudent(){
-        Student student = new Student(
+        return new Student(
           1,
           "Ramesh",
           "Fadatare"
         );
-        return student;
     }
 
     // http://localhost:8080/students
