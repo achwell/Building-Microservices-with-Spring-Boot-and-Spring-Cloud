@@ -12,5 +12,7 @@
     <modules>
         <module>springboot-rest-api</module>
         <module>springboot-restful-webservices</module>
+        <module>department-service</module>
+        <module>employee-service</module>
     </modules>
 </project>
