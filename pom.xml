@@ -14,5 +14,6 @@
         <module>springboot-restful-webservices</module>
         <module>department-service</module>
         <module>employee-service</module>
+        <module>service-registry</module>
     </modules>
 </project>

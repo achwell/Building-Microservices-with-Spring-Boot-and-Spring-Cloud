@@ -12,6 +12,7 @@ import net.javaguides.employeeservice.service.APIClient;
 import net.javaguides.employeeservice.service.EmployeeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    // private RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     // private final WebClient webClient;
     private final APIClient apiClient;
 
@@ -42,7 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Employee employee = optionalEmployee.get();
 
-        //        ResponseEntity<DepartmentDto> responseEntity = restTemplate.getForEntity("http://DEPARTMENT-SERVICE/api/departments/" + employee.getDepartmentCode(),
+//        ResponseEntity<DepartmentDto> responseEntity = restTemplate.getForEntity("http://DEPARTMENT-SERVICE/api/departments/" + employee.getDepartmentCode(),
 //                DepartmentDto.class);
 //
 //        DepartmentDto departmentDto = responseEntity.getBody();
