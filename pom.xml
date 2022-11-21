@@ -13,5 +13,6 @@
         <module>service-registry</module>
         <module>department-service</module>
         <module>employee-service</module>
+        <module>api-gateway</module>
     </modules>
 </project>
